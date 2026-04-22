@@ -28,7 +28,6 @@ def calibracion():
     url_camara = "http://10.68.175.34:8080/video"
     cap = cv2.VideoCapture(url_camara)
 
-    # --- INICIALIZAMOS EL CRONÓMETRO ---
     tiempo_ultimo_disparo = time.time()
     intervalo_segundos = 0.6
 
@@ -47,22 +46,14 @@ def calibracion():
         if ids is not None:
             cv2.aruco.drawDetectedMarkers(frame, esquinas, ids)
 
-        # Mostramos la ventana de vídeo
         cv2.imshow("Calibracion Automatica - Mueve la camara despacio", frame)
 
-        # Esperamos 1 milisegundo a ver si pulsas 'Q' para salir
         tecla = cv2.waitKey(1) & 0xFF
 
-        # --- LÓGICA DE CAPTURA AUTOMÁTICA ---
-        # 1. Comprobamos si se ven los 4 ArUcos
         if ids is not None and len(ids) == 4:
 
             tiempo_actual = time.time()
-
-            # 2. Comprobamos si han pasado 0.6 segundos desde la última foto
             if (tiempo_actual - tiempo_ultimo_disparo) >= intervalo_segundos:
-
-                # Ordenamos del ID 0 al 3 (El Pacto de Sangre)
                 indices_ordenados = np.argsort(ids.flatten())
                 puntos_2D_esta_foto = []
 
@@ -73,12 +64,8 @@ def calibracion():
                 lista_fotos.append(np.array(puntos_2D_esta_foto))
                 print(f"📸 ¡Click automático! Foto {len(lista_fotos)}/{fotos_necesarias} guardada.")
 
-                # 3. Reseteamos el cronómetro
                 tiempo_ultimo_disparo = tiempo_actual
-
-                # Si llegamos a 40, rompemos el bucle automáticamente
                 if len(lista_fotos) >= fotos_necesarias:
-                    print("\n🎉 ¡Misión cumplida! Ya tenemos las 40 fotos.")
                     break
 
         # SI PULSAS LA 'Q' -> Salimos de emergencia
@@ -86,7 +73,6 @@ def calibracion():
             print("\nSaliendo antes de tiempo...")
             break
 
-    # Limpiamos y apagamos la cámara
     cap.release()
     cv2.destroyAllWindows()
 

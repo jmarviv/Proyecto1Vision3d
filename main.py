@@ -5,27 +5,30 @@ import homografia_DLT as h
 import Calcular_Distancia as D
 
 
+#APUNTAR AQUÍ LA URL DEL SERVIDOR DE LA CÁMARA
+url_camara = "http://10.68.175.34:8080/video"
+
+#APUNTAR AQUI LAS MEDIDAS DE LOS ARUCOS
+medidas_reales = np.array([
+    # --- ARUCO ID 0  ---
+    [0.0000, 0.3700], [0.0825, 0.3700], [0.0825, 0.2875], [0.0000, 0.2875],
+    # --- ARUCO ID 1  ---
+    [0.0000, 0.0825], [0.0825, 0.0825], [0.0825, 0.0000], [0.0000, 0.0000],
+    # --- ARUCO ID 2  ---
+    [0.2875, 0.3700], [0.3700, 0.3700], [0.3700, 0.2875], [0.2875, 0.2875],
+    # --- ARUCO ID 3  ---
+    [0.2875, 0.0825], [0.3700, 0.0825], [0.3700, 0.0000], [0.2875, 0.0000]
+], dtype=np.float32)
+
+
 def main():
     K = C.calibracion()
     print("✅ Calibración hecha y Matriz K obtenida")
-
-
-    medidas_reales = np.array([
-        # --- ARUCO ID 0  ---
-        [0.0000, 0.3700], [0.0825, 0.3700], [0.0825, 0.2875], [0.0000, 0.2875],
-        # --- ARUCO ID 1  ---
-        [0.0000, 0.0825], [0.0825, 0.0825], [0.0825, 0.0000], [0.0000, 0.0000],
-        # --- ARUCO ID 2  ---
-        [0.2875, 0.3700], [0.3700, 0.3700], [0.3700, 0.2875], [0.2875, 0.2875],
-        # --- ARUCO ID 3  ---
-        [0.2875, 0.0825], [0.3700, 0.0825], [0.3700, 0.0000], [0.2875, 0.0000]
-    ], dtype=np.float32)
-
     diccionario_aruco = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_ARUCO_ORIGINAL)
     parametros = cv2.aruco.DetectorParameters()
     detector = cv2.aruco.ArucoDetector(diccionario_aruco, parametros)
 
-    url_camara = "http://10.68.175.34:8080/video"
+
     cap = cv2.VideoCapture(url_camara)
 
     print("--- SISTEMA DE TELEMETRÍA ACTIVO ---")
