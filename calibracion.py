@@ -3,7 +3,8 @@ import numpy as np
 import time
 import ZHANG as Z
 
-
+#Este código es el encargado de realizar las imágenes para
+#pasarselas a la función zhang, también devuelve la matriz K al MAIN o la imprime por pantalla
 def calibracion():
     diccionario_aruco = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_ARUCO_ORIGINAL)
     parametros_aruco = cv2.aruco.DetectorParameters()

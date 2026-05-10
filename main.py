@@ -51,7 +51,7 @@ def main():
             puntos_2D = np.array(puntos_2D, dtype=np.float32)
             H = h.homografia_dlt(medidas_reales, puntos_2D)
 
-
+            #Calculamos el vector de traslación para cada frame capturado
             vector_t = D.calcular_distancia_manual(H, K)
 
             distancia_total = np.linalg.norm(vector_t)
