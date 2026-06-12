@@ -1,6 +1,6 @@
 import numpy as np
-import homografia_DLT as HOMO
 import construir_V as CONSV
+import geometria_robusta as GEO_ROB
 
 
 #lista_fotos es una lista de listas,
@@ -10,7 +10,7 @@ def ZHANG(lista_fotos, medidas_reales):
 
     #calculamos la homografia a través del metodo DLT ya que como todavia no tenemos K no nos queda otra
     for puntos_utiles_piexeles in lista_fotos:
-        H = HOMO.homografia_dlt(medidas_reales, puntos_utiles_piexeles)
+        H = GEO_ROB.homografia_ransac_normalizada(medidas_reales, puntos_utiles_piexeles)
         lista_Homografias_hechas.append(H)
 
     #comenzamos a crear la matriz V
