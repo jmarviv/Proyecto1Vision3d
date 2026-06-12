@@ -24,6 +24,8 @@ def normalizar_puntos(puntos):
     return puntos_normalizados, T
 
 
+
+
 def calcular_homografia_dlt(src, dst):
     A = []
     for i in range(4):
@@ -35,6 +37,8 @@ def calcular_homografia_dlt(src, dst):
     A = np.array(A)
     U, S, Vt = np.linalg.svd(A)
     return Vt[-1].reshape(3, 3)
+
+
 
 
 def homografia_ransac_normalizada(puntos_mundo, puntos_img, iteraciones=500, umbral=3.0):
@@ -74,6 +78,8 @@ def homografia_ransac_normalizada(puntos_mundo, puntos_img, iteraciones=500, umb
     return mejor_H
 
 
+
+
 def procrustes_ortogonal(R_aprox):
     U, S, Vt = np.linalg.svd(R_aprox)
     R_pura = np.dot(U, Vt)
@@ -83,6 +89,8 @@ def procrustes_ortogonal(R_aprox):
         R_pura = np.dot(U, Vt)
 
     return R_pura
+
+
 
 
 def dibujar_ejes_3d(frame, K, H, longitud_eje=0.15):
@@ -135,7 +143,7 @@ def dibujar_ejes_3d(frame, K, H, longitud_eje=0.15):
     return frame
 
 
-def mostrar_trayectoria_3d(K, historial_H, medidas_reales_3D, scale=0.04):
+def mostrar_trayectoria_3d(K, historial_H, medidas_reales_3D, scale=0.06):
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
     K_inv = np.linalg.inv(K)
@@ -160,18 +168,18 @@ def mostrar_trayectoria_3d(K, historial_H, medidas_reales_3D, scale=0.04):
         C_plot = [C[2], -C[0], -C[1]]
         trayectoria_C.append(C_plot)
 
-        v_x = [R[0, 2], -R[0, 0], -R[0, 1]]
-        v_y = [R[1, 2], -R[1, 0], -R[1, 1]]
-        v_z = [R[2, 2], -R[2, 0], -R[2, 1]]
 
-        ax.quiver(C_plot[0], C_plot[1], C_plot[2], v_x[0], v_x[1], v_x[2], length=scale, color='red', linewidth=1.2)
-        ax.quiver(C_plot[0], C_plot[1], C_plot[2], v_y[0], v_y[1], v_y[2], length=scale, color='green', linewidth=1.2)
-        ax.quiver(C_plot[0], C_plot[1], C_plot[2], v_z[0], v_z[1], v_z[2], length=scale, color='blue', linewidth=1.2)
+        dir_x = R[2, 2]
+        dir_y = -R[0, 2]
+        dir_z = -R[1, 2]
+
+        ax.quiver(C_plot[0], C_plot[1], C_plot[2], dir_x, dir_y, dir_z,
+                  length=scale, color='blue', linewidth=1.5, normalize=True)
 
     if trayectoria_C:
         trayectoria_C = np.array(trayectoria_C)
-        ax.plot(trayectoria_C[:, 0], trayectoria_C[:, 1], trayectoria_C[:, 2], color='black', linestyle='--',
-                linewidth=1, label='Trayectoria')
+        ax.plot(trayectoria_C[:, 0], trayectoria_C[:, 1], trayectoria_C[:, 2],
+                color='black', linestyle='--', linewidth=1, label='Trayectoria')
 
     min_y, max_y = np.min(-medidas_reales_3D[:, 0]), np.max(-medidas_reales_3D[:, 0])
     min_z, max_z = np.min(-medidas_reales_3D[:, 1]), np.max(-medidas_reales_3D[:, 1])
@@ -180,17 +188,19 @@ def mostrar_trayectoria_3d(K, historial_H, medidas_reales_3D, scale=0.04):
     xx = np.zeros_like(yy)
 
     ax.plot_surface(xx, yy, zz, color='yellow', alpha=0.3)
-
     ax.scatter(np.zeros_like(medidas_reales_3D[:, 0]), -medidas_reales_3D[:, 0], -medidas_reales_3D[:, 1],
                color='black', s=20, label='Pared ArUco')
 
     ax.set_xlabel('Eje X (Profundidad Invertida)')
     ax.set_ylabel('Eje Y (Ancho Lateral)')
     ax.set_zlabel('Eje Z (Altura)')
-    ax.set_title('Trayectoria Completa de la Cámara (Vectores Ortogonales)')
+    ax.set_title('Trayectoria de la Cámara (Vector de Dirección)')
     ax.set_box_aspect([1, 1, 1])
     ax.legend()
     plt.show()
+
+
+
 def mostrar_frame_actual_3d(K, H, medidas_reales_3D, scale=0.1):
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
